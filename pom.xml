@@ -29,6 +29,8 @@
         <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
         <minimal.maven.version>3.8.0</minimal.maven.version>
         <spring-boot-maven-plugin.version>2.1.5.RELEASE</spring-boot-maven-plugin.version>
+        <test-containers-postgresql.version>1.17.1</test-containers-postgresql.version>
+        <test-containers-junit-jupiter.version>1.17.1</test-containers-junit-jupiter.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +42,20 @@
                 <version>2.6.6</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${test-containers-postgresql.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${test-containers-junit-jupiter.version}</version>
+                <scope>test</scope>
             </dependency>
 
         </dependencies>
