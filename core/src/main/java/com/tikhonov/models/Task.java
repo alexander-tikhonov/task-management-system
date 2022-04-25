@@ -28,11 +28,9 @@ public class Task {
     private User assignee;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     private Priority priority;
 
     public Task() {}

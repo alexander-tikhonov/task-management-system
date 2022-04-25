@@ -17,7 +17,7 @@ public class Comment {
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
