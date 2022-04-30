@@ -2,6 +2,7 @@ package com.tikhonov.services.impl;
 
 import com.tikhonov.exceptions.TaskServiceException;
 import com.tikhonov.models.Task;
+import com.tikhonov.models.TaskPriority;
 import com.tikhonov.models.TaskStatus;
 import com.tikhonov.models.User;
 import com.tikhonov.repositories.TaskRepository;
@@ -64,7 +65,7 @@ class TaskServiceImplTest {
     @Test
     public void shouldThrowExceptionWhenTaskHasIncorrectFormat() {
         var task = new Task(TASK_ID,null, TASK_DESCRIPTION,
-                createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
 
         given(fieldValidator.validate(task)).willReturn(false);
 
@@ -76,10 +77,10 @@ class TaskServiceImplTest {
     @Test
     public void shouldCorrectSaveTask() {
         var task = new Task(null, TASK_TITLE,TASK_DESCRIPTION,
-                createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
 
         var expectedTask = new Task(TASK_ID, TASK_TITLE,TASK_DESCRIPTION,
-                createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
 
         given(fieldValidator.validate(task)).willReturn(true);
         given(taskRepository.save(task)).willReturn(expectedTask);
@@ -93,7 +94,7 @@ class TaskServiceImplTest {
     @Test
     public void shouldFindExistingTaskById() {
         var task = new Task(TASK_ID, TASK_TITLE,TASK_DESCRIPTION,
-                createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
 
         given(taskRepository.findById(TASK_ID)).willReturn(Optional.of(task));
         assertThat(taskService.findById(TASK_ID)).get().isEqualTo(task);
@@ -103,9 +104,9 @@ class TaskServiceImplTest {
     @Test
     public void shouldFindAllTasks() {
         List<Task> tasks = List.of(
-                new Task(1L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM),
-                new Task(2L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM),
-                new Task(3L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM)
+                new Task(1L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM),
+                new Task(2L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM),
+                new Task(3L, TASK_TITLE,TASK_DESCRIPTION, createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM)
         );
 
         given(taskRepository.findAll()).willReturn(tasks);
@@ -116,7 +117,7 @@ class TaskServiceImplTest {
     @Test
     public void shouldCorrectUpdateTask() {
         var task = new Task(TASK_ID, TASK_TITLE,TASK_DESCRIPTION,
-                createdByUser, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdByUser, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
 
         given(fieldValidator.validate(task)).willReturn(true);
         given(taskRepository.save(task)).willReturn(task);
