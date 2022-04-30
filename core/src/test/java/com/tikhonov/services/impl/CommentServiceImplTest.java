@@ -1,10 +1,7 @@
 package com.tikhonov.services.impl;
 
 import com.tikhonov.exceptions.CommentServiceException;
-import com.tikhonov.models.Comment;
-import com.tikhonov.models.Task;
-import com.tikhonov.models.TaskStatus;
-import com.tikhonov.models.User;
+import com.tikhonov.models.*;
 import com.tikhonov.repositories.CommentRepository;
 import com.tikhonov.services.CommentService;
 import com.tikhonov.validators.FieldValidator;
@@ -17,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -64,13 +60,13 @@ class CommentServiceImplTest {
         createdBy = new User(CREATED_BY_ID, CREATED_BY_NAME, CREATED_BY_EMAIL);
         assignee = new User(ASSIGNEE_ID, ASSIGNEE_NAME, ASSIGNEE_EMAIL);
         task = new Task(TASK_ID, TASK_TITLE, TASK_DESCRIPTION,
-                createdBy, assignee, TaskStatus.NEW, Task.Priority.MEDIUM);
+                createdBy, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
     }
 
     @DisplayName(" should throw exception when comment has incorrect format")
     @Test
     public void shouldThrowExceptionWhenCommentHasIncorrectFormat() {
-        var comment = new Comment(COMMENT_ID, null, new Date(), task, createdBy);
+        var comment = new Comment(COMMENT_ID, null, task, createdBy);
 
         given(fieldValidator.validate(comment)).willReturn(false);
         assertThatThrownBy(() -> commentService.create(comment))
@@ -80,8 +76,8 @@ class CommentServiceImplTest {
     @DisplayName(" should correct save comment")
     @Test
     public void shouldCorrectSaveComment() {
-        var comment = new Comment(null, COMMENT_CONTENT, new Date(), task, createdBy);
-        var expectedComment = new Comment(COMMENT_ID, COMMENT_CONTENT, new Date(), task, createdBy);
+        var comment = new Comment(null, COMMENT_CONTENT, task, createdBy);
+        var expectedComment = new Comment(COMMENT_ID, COMMENT_CONTENT, task, createdBy);
 
         given(fieldValidator.validate(comment)).willReturn(true);
         given(commentRepository.save(comment)).willReturn(expectedComment);
@@ -94,7 +90,7 @@ class CommentServiceImplTest {
     @DisplayName(" should find all comments by task id")
     @Test
     public void shouldFindAllCommentsByTaskId() {
-        var comment = new Comment(COMMENT_ID, COMMENT_CONTENT, new Date(), task, createdBy);
+        var comment = new Comment(COMMENT_ID, COMMENT_CONTENT, task, createdBy);
 
         given(commentRepository.findAllByTask_Id(TASK_ID)).willReturn(List.of(comment));
         assertThat(commentService.findAllByTaskId(TASK_ID)).isNotNull();

@@ -1,12 +1,17 @@
 package com.tikhonov.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "comments")
+@NamedEntityGraph(name = "comments-eg", attributeNodes = {
+        @NamedAttributeNode("user"),
+})
 public class Comment {
 
     @Id
@@ -16,9 +21,9 @@ public class Comment {
     @NotBlank
     private String content;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
@@ -30,10 +35,9 @@ public class Comment {
 
     public Comment() {}
 
-    public Comment(Long id, String content, Date createdAt, Task task, User user) {
+    public Comment(Long id, String content, Task task, User user) {
         this.id = id;
         this.content = content;
-        this.createdAt = createdAt;
         this.task = task;
         this.user = user;
     }
@@ -54,12 +58,8 @@ public class Comment {
         this.content = content;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Task getTask() {
