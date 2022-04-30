@@ -27,10 +27,13 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <minimal.maven.version>3.8.0</minimal.maven.version>
         <spring-boot-maven-plugin.version>2.1.5.RELEASE</spring-boot-maven-plugin.version>
+        <map-struct.version>1.4.2.Final</map-struct.version>
         <test-containers-postgresql.version>1.17.1</test-containers-postgresql.version>
         <test-containers-junit-jupiter.version>1.17.1</test-containers-junit-jupiter.version>
+        <maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +55,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${map-struct.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${test-containers-junit-jupiter.version}</version>
@@ -64,7 +73,6 @@
     <build>
         <pluginManagement>
             <plugins>
-
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
@@ -90,6 +98,29 @@
                             </configuration>
                         </execution>
                     </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${map-struct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

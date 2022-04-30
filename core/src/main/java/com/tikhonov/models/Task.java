@@ -7,6 +7,10 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tasks")
+@NamedEntityGraph(name = "tasks-eg", attributeNodes = {
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("assignee")
+})
 public class Task {
 
     @Id
@@ -31,7 +35,7 @@ public class Task {
     private TaskStatus status;
 
     @NotNull
-    private Priority priority;
+    private TaskPriority priority;
 
     public Task() {}
 
@@ -41,7 +45,7 @@ public class Task {
                 User createdBy,
                 User assignee,
                 TaskStatus status,
-                Priority priority) {
+                TaskPriority priority) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -99,16 +103,12 @@ public class Task {
         this.status = status;
     }
 
-    public Priority getPriority() {
+    public TaskPriority getPriority() {
         return priority;
     }
 
-    public void setPriority(Priority priority) {
+    public void setPriority(TaskPriority priority) {
         this.priority = priority;
-    }
-
-    public enum Priority {
-        LOW, MEDIUM, HIGH;
     }
 
     @Override

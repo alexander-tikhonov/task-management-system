@@ -1,6 +1,6 @@
 package com.tikhonov.repositories;
 
-import com.tikhonov.models.User;
+import com.tikhonov.models.Comment;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.DisplayName;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,22 +17,23 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
 
+import java.util.List;
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Repository for working with users ")
+@DisplayName("Repository for working with comments")
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserRepositoryIntegrationTest {
+public class CommentRepositoryIntegrationTest {
 
     private static final String POSTGRESQL_CONTAINER_VERSION = "postgres:14.2";
     private static final String DB_NAME = "task_management_system";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "secret";
 
-    private static final Long USER_ID = 5L;
-    private static final String USER_NAME = "Ivan";
-    private static final String USER_EMAIL = "ivan@mail.ru";
+    private static final Long TASK_ID = 2L;
 
     @Container
     private static final PostgreSQLContainer<?> postgreSQLContainer =
@@ -43,7 +43,7 @@ public class UserRepositoryIntegrationTest {
                     .withPassword(DB_PASSWORD);
 
     @TestConfiguration
-    static class UserRepositoryIntegrationTestConfig {
+    static class CommentRepositoryIntegrationTestConfig {
 
         @Bean
         public DataSource dataSource() {
@@ -58,24 +58,17 @@ public class UserRepositoryIntegrationTest {
     }
 
     @Autowired
-    private UserRepository userRepository;
+    private CommentRepository commentRepository;
 
-    @Autowired
-    private TestEntityManager em;
 
-    @DisplayName(" should correct save user")
-    @Transactional
+    @DisplayName(" should find all comments by task id")
+    @Transactional(readOnly = true)
     @Test
-    public void shouldCorrectSaveUser() {
+    public void shouldFindAllCommentsByTaskId() {
         assertThat(postgreSQLContainer.isRunning()).isTrue();
 
-        var user = new User(null, USER_NAME, USER_EMAIL);
-        userRepository.save(user);
-
-        em.flush();
-        em.detach(user);
-
-        var expectedUser = em.find(User.class, USER_ID);
-        assertThat(expectedUser).isEqualTo(user);
+        List<Comment> expectedComments = commentRepository.findAllByTask_Id(TASK_ID);
+        assertThat(expectedComments).isNotNull()
+                .allMatch(comment -> Objects.equals(comment.getTask().getId(), TASK_ID));
     }
 }
