@@ -6,6 +6,7 @@ import com.tikhonov.models.TaskStatus;
 import com.tikhonov.models.User;
 import com.tikhonov.models.dto.TaskRequestDto;
 import com.tikhonov.models.dto.TaskResponseDto;
+import com.tikhonov.models.dto.UserResponseDto;
 import com.tikhonov.services.facades.TaskFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -41,6 +44,9 @@ class TaskControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @MockBean(name = "userDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
+
     @MockBean
     private TaskFacade taskFacade;
 
@@ -50,10 +56,10 @@ class TaskControllerTest {
     @BeforeEach
     void setUp() {
         gson = new Gson();
-        var assignee = new User();
+        var assignee = new UserResponseDto();
         assignee.setId(ASSIGNEE_ID);
 
-        var createdBy = new User();
+        var createdBy = new UserResponseDto();
         createdBy.setId(CREATED_BY_ID);
 
         expectedTask = new TaskResponseDto(TASK_ID, TASK_TITLE, TASK_DESCRIPTION,
@@ -61,6 +67,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should correct create task")
+    @WithMockUser
     @Test
     public void shouldCorrectCreateTask() throws Exception {
         var taskForSave = new TaskRequestDto(null, TASK_TITLE, TASK_DESCRIPTION,
@@ -71,7 +78,7 @@ class TaskControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(taskForSave));
 
-        given(taskFacade.create(any())).willReturn(expectedTask);
+        given(taskFacade.create(any(), any())).willReturn(expectedTask);
         mvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -79,6 +86,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should find existing task by id")
+    @WithMockUser
     @Test
     public void shouldFindExistingTaskById() throws Exception {
         var requestBuilder = get(TASK_BY_ID_URL, TASK_ID)
@@ -92,6 +100,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should find all tasks")
+    @WithMockUser
     @Test
     public void shouldFindAllTasks() throws Exception {
         var requestBuilder = get(TASKS_API_URL)
@@ -107,6 +116,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should correct update task")
+    @WithMockUser
     @Test
     public void shouldCorrectUpdateTask() throws Exception {
         var taskForUpdate = new TaskRequestDto(TASK_ID, TASK_TITLE, TASK_DESCRIPTION,
@@ -125,6 +135,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should correct delete task by id")
+    @WithMockUser
     @Test
     public void shouldCorrectDeleteTaskById() throws Exception {
         var requestBuilder = delete(TASK_BY_ID_URL, TASK_ID)
@@ -135,6 +146,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should return Not Found status when task is not found")
+    @WithMockUser
     @Test
     public void shouldReturnNotFoundStatusWhenTaskIsNotFound() throws Exception {
         var requestBuilder = get(TASK_BY_ID_URL, TASK_ID)
@@ -147,6 +159,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should return Bad Request status when sending incorrect data")
+    @WithMockUser
     @Test
     public void shouldReturnBadRequestStatusWhenSendingIncorrectData() throws Exception {
         var incorrectTask = new TaskRequestDto(TASK_ID, null, TASK_DESCRIPTION,
@@ -161,6 +174,7 @@ class TaskControllerTest {
     }
 
     @DisplayName(" should return Bad Request status when sending incorrect param")
+    @WithMockUser
     @Test
     public void shouldReturnBadRequestStatusWhenSendingIncorrectParam() throws Exception {
         var requestBuilder = get(TASK_BY_ID_URL, 0)
