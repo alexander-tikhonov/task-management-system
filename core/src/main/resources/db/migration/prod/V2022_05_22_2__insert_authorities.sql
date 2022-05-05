@@ -1,0 +1,9 @@
+INSERT INTO AUTHORITIES (ROLE)
+VALUES ('ADMIN'),
+       ('USER');
+
+INSERT INTO AUTHORITY_USER(AUTHORITY_ID, USER_ID)
+VALUES (1, 1),
+       (2, 2),
+       (2, 3),
+       (1, 4);

@@ -1,6 +1,7 @@
 package com.tikhonov.repositories;
 
 import com.tikhonov.models.Task;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,4 +17,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @EntityGraph(value = "tasks-eg")
     @Override
     List<Task> findAll();
+
+    @EntityGraph(value = "tasks-eg")
+    List<Task> findAllByAssignee_Id(Long id, Sort sort);
+
+    @EntityGraph(value = "tasks-eg")
+    List<Task> findAllByCreatedBy_Id(Long id, Sort sort);
 }

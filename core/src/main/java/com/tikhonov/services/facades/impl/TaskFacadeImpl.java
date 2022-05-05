@@ -7,15 +7,17 @@ import com.tikhonov.models.User;
 import com.tikhonov.models.dto.TaskRequestDto;
 import com.tikhonov.models.dto.TaskResponseDto;
 import com.tikhonov.models.dto.mappers.TaskMapper;
+import com.tikhonov.security.user.CustomUserDetails;
 import com.tikhonov.services.TaskService;
 import com.tikhonov.services.UserService;
 import com.tikhonov.services.facades.TaskFacade;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,8 +35,19 @@ public class TaskFacadeImpl implements TaskFacade {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public TaskResponseDto create(TaskRequestDto taskRequestDto) {
-        var taskForSave = fillTask(taskRequestDto);
+    public TaskResponseDto create(TaskRequestDto taskRequestDto, Authentication authentication) {
+        final Long assigneeId = taskRequestDto.getAssigneeId();
+        var assignee = getUserById(assigneeId);
+        var createdBy = getAuthUser(authentication);
+
+        var taskForSave = new Task();
+        taskForSave.setTitle(taskRequestDto.getTitle());
+        taskForSave.setDescription(taskRequestDto.getDescription());
+        taskForSave.setCreatedBy(createdBy);
+        taskForSave.setAssignee(assignee);
+        taskForSave.setStatus(TaskStatus.NEW);
+        taskForSave.setPriority(taskRequestDto.getPriority());
+
         return taskMapper.toResponseDto(taskService.create(taskForSave));
     }
 
@@ -52,11 +65,37 @@ public class TaskFacadeImpl implements TaskFacade {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<TaskResponseDto> findAllForAssignee(Sort sort, Authentication authentication) {
+        Long authId = getAuthUser(authentication).getId();
+
+        return taskService.findAllByAssigneeId(authId, sort).stream()
+                .map(taskMapper::toResponseDto).toList();
+    }
+
+    @Override
+    public List<TaskResponseDto> findAllForCreatedBy(Sort sort, Authentication authentication) {
+        Long authId = getAuthUser(authentication).getId();
+
+        return taskService.findAllByCreatedById(authId, sort).stream()
+                .map(taskMapper::toResponseDto).toList();
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public TaskResponseDto update(TaskRequestDto taskRequestDto) {
-        var taskForUpdate = fillTask(taskRequestDto);
-        return taskMapper.toResponseDto(taskService.update(taskForUpdate));
+        final Long assigneeId = taskRequestDto.getAssigneeId();
+        var assignee = getUserById(assigneeId);
+        var task = getTaskById(taskRequestDto.getId());
+
+        task.setTitle(taskRequestDto.getTitle());
+        task.setDescription(taskRequestDto.getDescription());
+        task.setAssignee(assignee);
+        task.setStatus(taskRequestDto.getStatus());
+        task.setPriority(taskRequestDto.getPriority());
+
+        return taskMapper.toResponseDto(taskService.update(task));
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -71,23 +110,14 @@ public class TaskFacadeImpl implements TaskFacade {
         );
     }
 
-    private Task fillTask(TaskRequestDto taskRequestDto) {
-        final Long assigneeId = taskRequestDto.getAssigneeId();
-        var assignee = getUserById(assigneeId);
+    private Task getTaskById(Long id) {
+        return taskService.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Task with id: %d not found", id))
+        );
+    }
 
-        var task = new Task();
-
-        if (Objects.isNull(taskRequestDto.getId())) {
-            task.setStatus(TaskStatus.NEW);
-        } else {
-            task.setStatus(taskRequestDto.getStatus());
-        }
-
-        task.setTitle(taskRequestDto.getTitle());
-        task.setDescription(taskRequestDto.getDescription());
-        task.setAssignee(assignee);
-        task.setPriority(taskRequestDto.getPriority());
-
-        return task;
+    private User getAuthUser(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 }

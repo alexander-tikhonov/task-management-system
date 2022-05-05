@@ -5,6 +5,7 @@ import com.tikhonov.models.Task;
 import com.tikhonov.repositories.TaskRepository;
 import com.tikhonov.services.TaskService;
 import com.tikhonov.validators.FieldValidator;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> findAll() {
         return taskRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Task> findAllByAssigneeId(Long id, Sort sort) {
+        return taskRepository.findAllByAssignee_Id(id, sort);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Task> findAllByCreatedById(Long id, Sort sort) {
+        return taskRepository.findAllByCreatedBy_Id(id, sort);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
