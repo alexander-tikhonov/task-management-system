@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -37,6 +38,7 @@ class CommentServiceImplTest {
     private static final Long TASK_ID = 10L;
     private static final String TASK_TITLE = "Title";
     private static final String TASK_DESCRIPTION = "Description";
+    private static final String USER_PASSWORD = "secret";
 
     @Configuration
     @Import(CommentServiceImpl.class)
@@ -57,8 +59,9 @@ class CommentServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        createdBy = new User(CREATED_BY_ID, CREATED_BY_NAME, CREATED_BY_EMAIL);
-        assignee = new User(ASSIGNEE_ID, ASSIGNEE_NAME, ASSIGNEE_EMAIL);
+        Set<Authority> authorities = Set.of(new Authority("USER"));
+        createdBy = new User(CREATED_BY_ID, CREATED_BY_NAME, CREATED_BY_EMAIL, USER_PASSWORD, authorities);
+        assignee = new User(ASSIGNEE_ID, ASSIGNEE_NAME, ASSIGNEE_EMAIL, USER_PASSWORD, authorities);
         task = new Task(TASK_ID, TASK_TITLE, TASK_DESCRIPTION,
                 createdBy, assignee, TaskStatus.NEW, TaskPriority.MEDIUM);
     }

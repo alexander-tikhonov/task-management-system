@@ -1,10 +1,7 @@
 package com.tikhonov.services.impl;
 
 import com.tikhonov.exceptions.TaskServiceException;
-import com.tikhonov.models.Task;
-import com.tikhonov.models.TaskPriority;
-import com.tikhonov.models.TaskStatus;
-import com.tikhonov.models.User;
+import com.tikhonov.models.*;
 import com.tikhonov.repositories.TaskRepository;
 import com.tikhonov.services.TaskService;
 import com.tikhonov.validators.FieldValidator;
@@ -19,6 +16,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -38,6 +36,7 @@ class TaskServiceImplTest {
     private static final Long ASSIGNEE_ID = 2L;
     private static final String ASSIGNEE_NAME = "Ivan";
     private static final String ASSIGNEE_EMAIL = "u2@mail.ru";
+    private static final String USER_PASSWORD = "secret";
 
     @Configuration
     @Import(TaskServiceImpl.class)
@@ -57,8 +56,9 @@ class TaskServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        createdByUser = new User(CREATED_BY_ID, CREATED_BY_NAME, CREATED_BY_EMAIL);
-        assignee = new User(ASSIGNEE_ID, ASSIGNEE_NAME, ASSIGNEE_EMAIL);
+        Set<Authority> authorities = Set.of(new Authority("USER"));
+        createdByUser = new User(CREATED_BY_ID, CREATED_BY_NAME, CREATED_BY_EMAIL, USER_PASSWORD, authorities);
+        assignee = new User(ASSIGNEE_ID, ASSIGNEE_NAME, ASSIGNEE_EMAIL, USER_PASSWORD, authorities);
     }
 
     @DisplayName(" should throw exception when task has incorrect format")

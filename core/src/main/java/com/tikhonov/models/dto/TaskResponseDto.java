@@ -15,8 +15,8 @@ public class TaskResponseDto implements Serializable {
     private Long id;
     private String title;
     private String description;
-    private User createdBy;
-    private User assignee;
+    private UserResponseDto createdBy;
+    private UserResponseDto assignee;
     private TaskStatus status;
     private TaskPriority priority;
 
@@ -25,8 +25,8 @@ public class TaskResponseDto implements Serializable {
     public TaskResponseDto(Long id,
                            String title,
                            String description,
-                           User createdBy,
-                           User assignee,
+                           UserResponseDto createdBy,
+                           UserResponseDto assignee,
                            TaskStatus status,
                            TaskPriority priority) {
         this.id = id;
@@ -62,19 +62,19 @@ public class TaskResponseDto implements Serializable {
         this.description = description;
     }
 
-    public User getCreatedBy() {
+    public UserResponseDto getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(UserResponseDto createdBy) {
         this.createdBy = createdBy;
     }
 
-    public User getAssignee() {
+    public UserResponseDto getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(User assignee) {
+    public void setAssignee(UserResponseDto assignee) {
         this.assignee = assignee;
     }
 

@@ -12,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,9 +42,13 @@ class CommentControllerTest {
     private static final String COMMENTS_API_URL = "/api/comments";
     private static final String COMMENTS_BY_TASK_ID = COMMENTS_API_URL + "?taskId={id}";
     private static final String COMMENT_BY_ID = COMMENTS_API_URL + "/{id}";
+    private static final String USER_PASSWORD = "secret";
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean(name = "userDetailsServiceImpl")
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,11 +60,13 @@ class CommentControllerTest {
 
     @BeforeEach
     void setUp() {
-        var user = new User(USER_ID, USER_NAME, USER_EMAIL);
+        Set<Authority> authorities = Set.of(new Authority("USER"));
+        var user = new User(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, authorities);
         expectedComment = new CommentResponseDto(COMMENT_ID, COMMENT_CONTENT, LocalDateTime.now(), user);
     }
 
     @DisplayName(" should correct create comment")
+    @WithMockUser
     @Test
     public void shouldCorrectCreateComment() throws Exception {
         var commentForSave = new CommentRequestDto(null, COMMENT_CONTENT, USER_ID, TASK_ID);
@@ -75,6 +84,7 @@ class CommentControllerTest {
     }
 
     @DisplayName(" should find comments by task id")
+    @WithMockUser
     @Test
     public void shouldFindCommentsByTaskId() throws Exception {
         var requestBuilder = get(COMMENTS_BY_TASK_ID, TASK_ID)
@@ -91,6 +101,7 @@ class CommentControllerTest {
     }
 
     @DisplayName(" should correct delete comment by id")
+    @WithMockUser
     @Test
     public void shouldCorrectDeleteTaskById() throws Exception {
         var requestBuilder = delete(COMMENT_BY_ID, COMMENT_ID)
@@ -101,6 +112,7 @@ class CommentControllerTest {
     }
 
     @DisplayName(" should return Bad Request status when sending incorrect data")
+    @WithMockUser
     @Test
     public void shouldReturnBadRequestStatusWhenSendingIncorrectData() throws Exception {
         var incorrectComment = new CommentRequestDto(null, "", USER_ID, TASK_ID);
@@ -114,6 +126,7 @@ class CommentControllerTest {
     }
 
     @DisplayName(" should return Bad Request status when sending incorrect param")
+    @WithMockUser
     @Test
     public void shouldReturnBadRequestStatusWhenSendingIncorrectParam() throws Exception {
         var requestBuilder = get(COMMENTS_BY_TASK_ID, 0)
