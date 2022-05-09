@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tikhonov.models.*;
 import com.tikhonov.models.dto.CommentRequestDto;
 import com.tikhonov.models.dto.CommentResponseDto;
+import com.tikhonov.security.jwt.JwtAuthEntryPoint;
+import com.tikhonov.security.jwt.JwtAuthTokenFilter;
+import com.tikhonov.security.jwt.JwtProvider;
 import com.tikhonov.services.facades.CommentFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @DisplayName("Controller for working with comments")
-@WebMvcTest(CommentController.class)
+@WebMvcTest({ CommentController.class, JwtAuthTokenFilter.class })
 class CommentControllerTest {
 
     private static final Long USER_ID = 1L;
@@ -49,6 +52,12 @@ class CommentControllerTest {
 
     @MockBean(name = "userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
+
+    @MockBean
+    private JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @Autowired
     private ObjectMapper objectMapper;

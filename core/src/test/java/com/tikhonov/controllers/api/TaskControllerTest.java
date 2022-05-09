@@ -7,6 +7,9 @@ import com.tikhonov.models.User;
 import com.tikhonov.models.dto.TaskRequestDto;
 import com.tikhonov.models.dto.TaskResponseDto;
 import com.tikhonov.models.dto.UserResponseDto;
+import com.tikhonov.security.jwt.JwtAuthEntryPoint;
+import com.tikhonov.security.jwt.JwtAuthTokenFilter;
+import com.tikhonov.security.jwt.JwtProvider;
 import com.tikhonov.services.facades.TaskFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Controller for working with tasks")
-@WebMvcTest(TaskController.class)
+@WebMvcTest({ TaskController.class, JwtAuthTokenFilter.class })
 class TaskControllerTest {
 
     private static final Long TASK_ID = 1L;
@@ -46,6 +49,12 @@ class TaskControllerTest {
 
     @MockBean(name = "userDetailsServiceImpl")
     private UserDetailsService userDetailsService;
+
+    @MockBean
+    private JwtAuthEntryPoint jwtAuthEntryPoint;
+
+    @MockBean
+    private JwtProvider jwtProvider;
 
     @MockBean
     private TaskFacade taskFacade;
