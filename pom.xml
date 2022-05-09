@@ -34,6 +34,8 @@
         <test-containers-postgresql.version>1.17.1</test-containers-postgresql.version>
         <test-containers-junit-jupiter.version>1.17.1</test-containers-junit-jupiter.version>
         <maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
+        <json-web-token.version>0.9.1</json-web-token.version>
+        <json-web-token-api.version>0.11.5</json-web-token-api.version>
     </properties>
 
     <dependencyManagement>
@@ -58,6 +60,18 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${map-struct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${json-web-token.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${json-web-token-api.version}</version>
             </dependency>
 
             <dependency>
