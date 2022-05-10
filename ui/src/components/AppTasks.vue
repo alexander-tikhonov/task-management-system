@@ -1,35 +1,37 @@
 <template>
-    <div class="col-full">
-        <b-alert show>
-            <h1>Tasks</h1>
-        </b-alert>
-    </div>
+  <div class="col-full">
+    <app-header></app-header>
+  </div>
 </template>
 
 <script>
-import {AXIOS} from '../http-common'
+import AppHeader from "@/components/AppHeader";
+import {AXIOS} from '@/http-common'
+import {mapActions} from "vuex";
 
 export default {
-    components: {
-    },
-    data () {
-        return {
-
-        }
-    },
-    computed: {},
-    methods: {
-        loadTasks() {
-            AXIOS.get('/tasks').then(response => {
-                console.log(response.data);
-            }).catch(error => {
-               console.log('ERROR: ' + error.response.data);
-            });
-        }
-    },
-    mounted() {
-        this.loadTasks();
+  components: {
+    AppHeader
+  },
+  data() {
+    return {}
+  },
+  computed: {},
+  methods: {
+    ...mapActions('user', {
+      logout: 'logout'
+    }),
+    loadTasks() {
+      AXIOS.get('/tasks/assignee').then(response => {
+        console.log(response.data);
+      }).catch(error => {
+        console.log('ERROR: ' + error.response.data);
+      });
     }
+  },
+  mounted() {
+    this.loadTasks();
+  }
 }
 </script>
 
