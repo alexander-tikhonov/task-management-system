@@ -1,9 +1,21 @@
 <template>
   <div>
     <b-navbar toggleable="lg" type="light" variant="light">
-      <b-navbar-brand :to="{name: 'Tasks'}">
+      <b-navbar-brand :to="{name: 'TasksAssignee'}">
         <h2 class="logo">Task Management System</h2>
       </b-navbar-brand>
+
+      <b-navbar-nav>
+        <b-nav-form>
+          <b-nav-item :to="{name: 'TasksAssignee'}">
+            <span class="task-links">Мои задачи</span>
+          </b-nav-item>
+          <b-nav-item :to="{name: 'TasksCreated'}">
+            <span class="task-links">Поставленные задачи</span>
+          </b-nav-item>
+        </b-nav-form>
+      </b-navbar-nav>
+
       <b-navbar-nav class="ml-auto">
         <b-nav-form>
           <b-nav-item class="mr-sm-2">
@@ -40,6 +52,10 @@ export default {
 
 <style scoped>
   .logo {
+    color: #0275d8;
+  }
+
+  .task-links {
     color: #0275d8;
   }
 </style>

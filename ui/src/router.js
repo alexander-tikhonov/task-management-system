@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import AppTasks from '@/components/AppTasks'
+import AppTasksAssignee from '@/components/AppTasksAssignee'
+import AppTasksCreated from '@/components/AppTasksCreated'
 import AppLogin from '@/components/AppLogin'
 
 import {store} from '@/store/store'
@@ -10,9 +11,17 @@ Vue.use(Router)
 
 const routes = [
     {
-        path: '/tasks',
-        name: 'Tasks',
-        component: AppTasks,
+        path: '/tasks/assignee',
+        name: 'TasksAssignee',
+        component: AppTasksAssignee,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/tasks/created',
+        name: 'TasksCreated',
+        component: AppTasksCreated,
         meta: {
             requiresAuth: true
         }
