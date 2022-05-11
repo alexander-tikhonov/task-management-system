@@ -45,7 +45,7 @@ export default {
                 commit('setUser', response.data.user)
                 commit('setAuthorities', response.data.authorities)
 
-                router.push({name: 'Tasks'})
+                router.push({name: 'TasksAssignee'})
             }).catch(error => {
                 console.log('При аутентификации в приложении возникла ошибка', error)
                 commit('setLoginError', {message: "Неверно указаны логин или пароль"})
