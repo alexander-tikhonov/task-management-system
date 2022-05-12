@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -20,6 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,5 +93,21 @@ public class UserRepositoryIntegrationTest {
 
         var expectedUser = em.find(User.class, USER_ID);
         assertThat(expectedUser).isEqualTo(user);
+    }
+
+    @DisplayName(" should find user by name is like")
+    @Transactional
+    @Test
+    public void shouldFindUserByNameIsLike() {
+        var userExample = new User();
+        userExample.setName(USER_NAME);
+
+        Example<User> exampleTerm = Example.of(userExample,
+                ExampleMatcher.matching().withIgnoreNullValues()
+                        .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains()
+                                .ignoreCase()));
+
+        List<User> expectedUsers = userRepository.findAll(exampleTerm);
+        assertThat(expectedUsers).allMatch(user -> user.getName().contains(USER_NAME));
     }
 }

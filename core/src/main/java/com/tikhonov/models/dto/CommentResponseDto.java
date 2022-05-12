@@ -1,5 +1,6 @@
 package com.tikhonov.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.tikhonov.models.User;
 
 import java.io.Serial;
@@ -14,6 +15,8 @@ public class CommentResponseDto implements Serializable {
 
     private Long id;
     private String content;
+
+    @JsonFormat(pattern="dd-MM-yyyy HH:mm")
     private LocalDateTime createdAt;
     private User user;
 

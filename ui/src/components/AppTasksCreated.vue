@@ -32,6 +32,7 @@
 import AppHeader from "@/components/AppHeader";
 import {AXIOS} from '@/http-common'
 import {mapActions} from "vuex";
+import {router} from "@/router";
 
 export default {
   components: {
@@ -107,7 +108,7 @@ export default {
       }
     },
     onRowClick(record) {
-      console.log(record);
+      router.push({ name: 'TaskDetail', params: { id: record.id } })
     }
   },
   mounted() {
