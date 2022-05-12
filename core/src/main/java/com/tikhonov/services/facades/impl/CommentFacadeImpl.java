@@ -7,10 +7,12 @@ import com.tikhonov.models.User;
 import com.tikhonov.models.dto.CommentRequestDto;
 import com.tikhonov.models.dto.CommentResponseDto;
 import com.tikhonov.models.dto.mappers.CommentMapper;
+import com.tikhonov.security.user.CustomUserDetails;
 import com.tikhonov.services.CommentService;
 import com.tikhonov.services.TaskService;
 import com.tikhonov.services.UserService;
 import com.tikhonov.services.facades.CommentFacade;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +39,10 @@ public class CommentFacadeImpl implements CommentFacade {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public CommentResponseDto create(CommentRequestDto commentRequestDto) {
-        final Long userId = commentRequestDto.getUserId();
+    public CommentResponseDto create(CommentRequestDto commentRequestDto, Authentication authentication) {
         final Long taskId = commentRequestDto.getTaskId();
 
-        var user = getUserById(userId);
+        var user = getAuthUser(authentication);
         var task = getTaskById(taskId);
 
         var commentForSave = new Comment();
@@ -76,5 +77,10 @@ public class CommentFacadeImpl implements CommentFacade {
         return taskService.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Task with id: %d not found!", id))
         );
+    }
+
+    private User getAuthUser(Authentication authentication) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 }

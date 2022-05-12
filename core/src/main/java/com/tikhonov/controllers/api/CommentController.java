@@ -5,6 +5,7 @@ import com.tikhonov.models.dto.CommentResponseDto;
 import com.tikhonov.services.facades.CommentFacade;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,10 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    public ResponseEntity<CommentResponseDto> create(@Valid @RequestBody CommentRequestDto comment) {
+    public ResponseEntity<CommentResponseDto> create(@Valid @RequestBody CommentRequestDto comment,
+                                                     Authentication authentication) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(commentFacade.create(comment));
+                .body(commentFacade.create(comment, authentication));
     }
 
     @GetMapping("/comments")

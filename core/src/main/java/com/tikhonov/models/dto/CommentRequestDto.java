@@ -18,18 +18,13 @@ public class CommentRequestDto implements Serializable {
 
     @NotNull
     @Positive
-    private Long userId;
-
-    @NotNull
-    @Positive
     private Long taskId;
 
     public CommentRequestDto() {}
 
-    public CommentRequestDto(Long id, String content, Long userId, Long taskId) {
+    public CommentRequestDto(Long id, String content, Long taskId) {
         this.id = id;
         this.content = content;
-        this.userId = userId;
         this.taskId = taskId;
     }
 
@@ -39,10 +34,6 @@ public class CommentRequestDto implements Serializable {
 
     public String getContent() {
         return content;
-    }
-
-    public Long getUserId() {
-        return userId;
     }
 
     public Long getTaskId() {
