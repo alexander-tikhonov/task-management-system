@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import AppTasksAssignee from '@/components/AppTasksAssignee'
 import AppTasksCreated from '@/components/AppTasksCreated'
+import AppTaskCreate from "@/components/AppTaskCreate";
 import AppTaskDetail from "@/components/AppTaskDetail";
-
 import AppLogin from '@/components/AppLogin'
 import {store} from '@/store/store'
 import {AXIOS} from '@/http-common'
@@ -32,6 +32,14 @@ const routes = [
         name: 'TaskDetail',
         component: AppTaskDetail,
         props: true,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/tasks/create',
+        name: 'TaskCreate',
+        component: AppTaskCreate,
         meta: {
             requiresAuth: true
         }
