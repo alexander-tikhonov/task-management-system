@@ -5,12 +5,20 @@ import AppTasksCreated from '@/components/AppTasksCreated'
 import AppTaskCreate from "@/components/AppTaskCreate";
 import AppTaskDetail from "@/components/AppTaskDetail";
 import AppLogin from '@/components/AppLogin'
+import AppNotFound from "@/components/AppNotFound";
+
 import {store} from '@/store/store'
 import {AXIOS} from '@/http-common'
 
 Vue.use(Router)
 
 const routes = [
+    {
+        path: '/',
+        redirect: {
+            name: 'TasksAssignee'
+        }
+    },
     {
         path: '/tasks/assignee',
         name: 'TasksAssignee',
@@ -49,6 +57,11 @@ const routes = [
         name: 'Login',
         component: AppLogin
     },
+    {
+        path: '*',
+        name: 'NotFound',
+        component: AppNotFound
+    }
 ]
 
 export const router = new Router({
