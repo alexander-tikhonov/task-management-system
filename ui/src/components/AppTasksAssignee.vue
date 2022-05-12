@@ -6,10 +6,11 @@
     </div>
 
     <div class="container-fluid">
-      <b-table class="task-table" striped hover
+      <b-table class="task-table" hover
                show-empty empty-text="Нет записей для отображения" empty-filtered-text="Нет записей для отображения"
                :items="tasks"
                :fields="tableFields"
+               :tbody-tr-class="getRowClass"
                @row-clicked="onRowClick">
         <template #head(status)="data">
           <div class="sort-header-items" @click="handleOrder('statusDirection')">{{ data.label }}</div>
@@ -109,6 +110,10 @@ export default {
     },
     onRowClick(record) {
       router.push({ name: 'TaskDetail', params: { id: record.id } })
+    },
+    getRowClass(item, type) {
+      if (!item || type !== 'row') return
+      if (item.status === "CLOSED") return "table-secondary"
     }
   },
   mounted() {
