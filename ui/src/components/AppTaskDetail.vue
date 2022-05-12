@@ -69,7 +69,7 @@
                               @search="onSearch">
 
                       <template #no-options="">
-                        Не удалось найти указанного автора
+                        Не удалось найти указанного исполнителя
                       </template>
                     </v-select>
                   </div>

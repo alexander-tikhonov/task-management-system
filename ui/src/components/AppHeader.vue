@@ -13,6 +13,9 @@
           <b-nav-item :to="{name: 'TasksCreated'}">
             <span class="task-links">Поставленные задачи</span>
           </b-nav-item>
+          <b-nav-item :to="{name: 'TaskCreate'}">
+            <span class="task-links">Создать задачу</span>
+          </b-nav-item>
         </b-nav-form>
       </b-navbar-nav>
 
