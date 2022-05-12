@@ -78,13 +78,13 @@ class CommentControllerTest {
     @WithMockUser
     @Test
     public void shouldCorrectCreateComment() throws Exception {
-        var commentForSave = new CommentRequestDto(null, COMMENT_CONTENT, USER_ID, TASK_ID);
+        var commentForSave = new CommentRequestDto(null, COMMENT_CONTENT, TASK_ID);
 
         var requestBuilder = post(COMMENTS_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(commentForSave));
 
-        given(commentFacade.create(any())).willReturn(expectedComment);
+        given(commentFacade.create(any(), any())).willReturn(expectedComment);
 
         mvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
@@ -124,7 +124,7 @@ class CommentControllerTest {
     @WithMockUser
     @Test
     public void shouldReturnBadRequestStatusWhenSendingIncorrectData() throws Exception {
-        var incorrectComment = new CommentRequestDto(null, "", USER_ID, TASK_ID);
+        var incorrectComment = new CommentRequestDto(null, "", TASK_ID);
 
         var requestBuilder = post(COMMENTS_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)

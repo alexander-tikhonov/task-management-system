@@ -5,6 +5,8 @@ import com.tikhonov.models.User;
 import com.tikhonov.repositories.UserRepository;
 import com.tikhonov.services.UserService;
 import com.tikhonov.validators.FieldValidator;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findUserByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<User> findAll(User userExample) {
+        final Example<User> exampleTerm = Example.of(
+                userExample,
+                ExampleMatcher.matching().withIgnoreNullValues()
+                        .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains()
+                                .ignoreCase())
+        );
+        return userRepository.findAll(exampleTerm);
     }
 
     @Transactional(readOnly = true)
