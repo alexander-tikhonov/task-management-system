@@ -100,6 +100,13 @@
               </b-row>
             </div>
           </b-card>
+
+          <div class="delete-btn">
+            <b-button v-show="isCreatedBy()" @click="deleteTask" variant="danger"
+                      class="float-sm-right">
+              Удалить задачу
+            </b-button>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -152,6 +159,7 @@
 import AppHeader from "@/components/AppHeader";
 import {AXIOS} from "@/http-common";
 import {mapGetters} from "vuex";
+import {router} from "@/router";
 
 export default {
   props: ['id'],
@@ -302,6 +310,15 @@ export default {
     updateAssignee(selectedItem) {
       this.currentTask.assignee = selectedItem;
       this.updateTask('assignee');
+    },
+    deleteTask() {
+      if (confirm("Подтвердите действие. Удалить задачу?")) {
+        AXIOS.delete("/tasks/" + this.currentTask.id).then(() => {
+          router.push({ name: 'TasksCreated' })
+        }).catch(error => {
+          console.log('ERROR: ' + error.response.data);
+        })
+      }
     }
   },
   mounted() {
@@ -355,5 +372,9 @@ export default {
   margin-left: 10px;
   color: #0275d8;
   cursor: pointer;
+}
+
+.delete-btn {
+  margin-top: 10px;
 }
 </style>
