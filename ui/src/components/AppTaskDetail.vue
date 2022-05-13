@@ -40,16 +40,15 @@
                       class="update float-sm-right">
               <b-icon class="update" icon="pencil-fill"></b-icon>
             </b-button>
-            <p v-if="!updates.descriptionChange">{{ currentTask.description }}</p>
-            <b-form-textarea
-                v-else
-                id="textarea"
-                v-model="currentTask.description"
-                v-bind:placeholder="currentTask.description"
-                @change="updateTask('description')"
-                rows="3"
-                max-rows="6"
-            ></b-form-textarea>
+            <div v-if="!updates.descriptionChange" v-html="currentTask.description"></div>
+            <div v-else class="editor">
+              <vue-editor v-model="currentTask.description" :editorToolbar="customToolbar"></vue-editor>
+              <b-button @click="updateTask('description')"
+                        variant="outline-primary"
+                        class="editor-save-btn float-sm-right">
+                Сохранить
+              </b-button>
+            </div>
           </div>
         </b-col>
         <b-col>
@@ -160,11 +159,13 @@ import AppHeader from "@/components/AppHeader";
 import {AXIOS} from "@/http-common";
 import {mapGetters} from "vuex";
 import {router} from "@/router";
+import {VueEditor} from "vue2-editor";
 
 export default {
   props: ['id'],
   components: {
-    AppHeader
+    AppHeader,
+    VueEditor
   },
   data() {
     return {
@@ -191,7 +192,11 @@ export default {
         "DEVELOPMENT"
       ],
       searchAssigneeName: "",
-      assignees: []
+      assignees: [],
+      customToolbar: [
+        ["bold", "italic", "underline", "link"],
+        [{list: "ordered"}, {list: "bullet"}],
+      ]
     }
   },
   methods: {
@@ -314,7 +319,7 @@ export default {
     deleteTask() {
       if (confirm("Подтвердите действие. Удалить задачу?")) {
         AXIOS.delete("/tasks/" + this.currentTask.id).then(() => {
-          router.push({ name: 'TasksCreated' })
+          router.push({name: 'TasksCreated'})
         }).catch(error => {
           console.log('ERROR: ' + error.response.data);
         })
@@ -375,6 +380,10 @@ export default {
 }
 
 .delete-btn {
+  margin-top: 10px;
+}
+
+.editor-save-btn {
   margin-top: 10px;
 }
 </style>
