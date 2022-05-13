@@ -4,7 +4,7 @@
     <b-container fluid class="tasks-header">
       <h3>Новая задача</h3>
       <b-row>
-        <b-col cols="4">
+        <b-col cols="6">
           <form @submit.prevent>
             <div class="form-group">
               <label>Заголовок<span class="required"> *</span></label>
@@ -13,11 +13,7 @@
 
             <div class="form-group">
               <label>Описание задачи<span class="required"> *</span></label>
-              <b-form-textarea id="textarea"
-                               v-model="taskForSave.description"
-                               rows="3"
-                               max-rows="6"
-              ></b-form-textarea>
+              <vue-editor v-model="taskForSave.description" :editorToolbar="customToolbar"></vue-editor>
             </div>
 
             <div class="form-group">
@@ -55,10 +51,12 @@
 import AppHeader from "@/components/AppHeader";
 import {AXIOS} from "@/http-common"
 import {router} from '@/router'
+import {VueEditor} from "vue2-editor";
 
 export default {
   components: {
-    AppHeader
+    AppHeader,
+    VueEditor
   },
   data() {
     return {
@@ -69,6 +67,10 @@ export default {
         "LOW",
         "MEDIUM",
         "HIGH"
+      ],
+      customToolbar: [
+        ["bold", "italic", "underline", "link"],
+        [{list: "ordered"}, {list: "bullet"}],
       ]
     }
   },
