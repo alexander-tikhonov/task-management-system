@@ -46,6 +46,33 @@ services:
     networks:
       - postgres
 
+  core:
+    container_name: task-management-core
+    build: .
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - task-management-system-mvn:/root/.m2
+    depends_on:
+      - postgres
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/task_management_system
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=secret
+    networks:
+      - postgres
+
+  ui:
+    container_name: task-management-ui
+    build: "./ui"
+    ports:
+      - "80:80"
+    volumes:
+      - task-management-system-npm:/app/node_modules
+    depends_on:
+      - core
+
 networks:
   postgres:
     driver: bridge
@@ -53,3 +80,6 @@ networks:
 volumes:
   pg_data:
   pg_admin:
+  task-management-system-mvn:
+  task-management-system-npm:
+
