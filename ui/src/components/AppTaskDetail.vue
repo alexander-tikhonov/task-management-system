@@ -126,7 +126,7 @@
                 </b-button>
               </b-col>
             </b-row>
-            <b-card-text>{{ item.content }}</b-card-text>
+            <b-card-text v-html="item.content"></b-card-text>
             <span class="comment-date">{{ item.createdAt }}</span>
           </b-card>
         </b-col>
@@ -136,13 +136,9 @@
     <b-container fluid class="send-comment">
       <b-row>
         <b-col cols="8">
-          <b-form-textarea
-              id="textarea"
-              v-model="comment"
-              placeholder="Комментарий..."
-              rows="3"
-              max-rows="6"
-          ></b-form-textarea>
+          <vue-editor id="comment-editor" placeholder="Комментарий..."
+                      v-model="comment"
+                      :editorToolbar="customToolbar"></vue-editor>
           <b-button class="comment-btn float-sm-right"
                     variant="outline-primary"
                     @click="sendComment"
