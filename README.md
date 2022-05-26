@@ -28,4 +28,8 @@ docker-compose build
 docker-compose up -d
 ```
 
-
+> Credentials пользователей для теста:
+> * `jack@white.ru:password` - Jack White
+> * `john@doe.ru:password` - John Doe
+> * `vincent@vega.ru:password` - Vincent Vega
+> * `jack@black.ru` - Jack Black
